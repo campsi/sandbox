@@ -1,0 +1,11 @@
+.collection.component ul.items > li {
+
+    display: flex;
+
+}
+
+.collection.component ul.items > li > .drag-handle {
+    padding: 0.5em;
+    color: white;
+    background: black;
+}

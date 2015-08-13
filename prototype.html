@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="application/javascript" src="lib/jquery/dist/jquery.js"></script>
+</head>
+<body>
+<script>
+
+
+    var Campsi = (function () {
+
+        var Component = function () {
+            this.componentConstruct = true;
+        };
+
+        Component.prototype = Object.create({
+
+            init: function (options, value, context) {
+                console.info('Component init', this);
+            }
+
+        });
+
+
+        var map = this.components = {
+            component: Component
+        };
+
+        var get = function (name, onLoad) {
+            onLoad.call(this, map[name]);
+        };
+
+        var add = function (prototypeFactory) {
+            extend('component', prototypeFactory);
+        };
+
+        var extend = function (parentName, prototypeFactory) {
+
+            get(parentName, function (Parent) {
+                var prototype = prototypeFactory(Parent.prototype);
+                var component = function () {
+                    Parent.call(this);
+                };
+
+                component.prototype = Object.create($.extend({}, Parent, prototype));
+                component.constructor = Parent;
+                map[prototype.name] = component;
+            });
+        };
+
+        return {
+            map: map,
+            get: get,
+            add: add,
+            extend: extend
+        }
+
+    })();
+
+    Campsi.add(function ($super) {
+
+        return {
+            name: 'text',
+            init: function () {
+                console.info(this);
+                $super.init.call(this);
+                console.info('text init', this);
+            }
+        }
+    });
+
+    Campsi.extend('text', function ($super) {
+        return {
+            name: 'number',
+            init: function () {
+                $super.init.call(this);
+                console.info('number init', this);
+            }
+        }
+    });
+
+    var n = new Campsi.map['number']();
+    n.init();
+
+</script>
+
+</body>
+</html>

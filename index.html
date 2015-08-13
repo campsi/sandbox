@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="lib/dragula.js/dist/dragula.min.css"/>
+    <title></title>
+    <style>
+        .field {
+            position:   relative;
+            padding:    0.5em 1em 0.5em 0.5em;
+            border:     1px solid #ecf0f1;
+            margin-top: -1px;
+        }
+
+        .field .label {
+            padding-bottom: 0.5em;
+        }
+
+        .field.error > .label {
+            color: red;
+        }
+
+        .field.required > span.required {
+            position: absolute;
+            right:    0.25em;
+        }
+    </style>
+    <link rel="stylesheet" href="src/collection/style.css"/>
+</head>
+<body>
+<h1>Test</h1>
+<script type="application/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+<script type="application/javascript" src="lib/dragula.js/dist/dragula.js"></script>
+<script type="application/javascript" src="src/campsi.core.js"></script>
+<script type="application/javascript" src="src/text/text-component.js"></script>
+<script type="application/javascript" src="src/select/select-component.js"></script>
+<script type="application/javascript" src="src/ajax-select/ajax-select-component.js"></script>
+<script type="application/javascript" src="src/collection/collection-component.js"></script>
+<script type="application/javascript" src="src/number/number-component.js"></script>
+<script type="application/javascript" src="src/form/form-component.js"></script>
+<!--<script type="application/javascript" src="src/form.js"></script>-->
+<!--<script type="application/javascript" src="src/api.js"></script>-->
+<!--<script type="application/javascript" src="src/text/text-component.js"></script>-->
+<script>
+
+
+    Campsi.components.create({
+        type: 'form',
+        label: 'Pizza',
+        name: 'pizza',
+        props: {
+            fields: [
+                {
+                    name: 'ingredients',
+                    type: 'collection',
+                    label: 'Ingrédients',
+                    props: {
+                        items: {
+                            type: 'text',
+                            required: true
+                        }
+                    }
+                },
+                {
+                    name: 'base',
+                    type: 'select',
+                    label: 'Base',
+                    props: {
+                        values: [{
+                            label: "Tomate",
+                            value: "tomato"
+                        }, {
+                            label: "Crême",
+                            value: "cream"
+                        }, {
+                            label: "Rosée",
+                            value: "rosado"
+                        }],
+                        valueField: 'value',
+                        labelField: 'label'
+
+                    }
+                },
+                {
+                    name: 'note',
+                    type: 'number',
+                    label: 'Note',
+                    required: true
+                },
+                {
+                    name: 'contact',
+                    type: 'form',
+                    label: 'Contact',
+                    props: {
+                        fields: [
+                            {
+                                name: 'name',
+                                type: 'text',
+                                label: 'Nom',
+                                required: true
+                            },
+                            {
+                                name: 'address',
+                                type: 'text',
+                                label: 'Adresse'
+                            },
+                            {
+                                name: 'postcode',
+                                type: 'text',
+                                label: 'Code Postal',
+                                props: {
+                                    beginsWith: '34'
+                                }
+                            },
+                            {
+                                name: 'city',
+                                type: 'text',
+                                label: 'Ville'
+                            }, {
+                                name: 'country',
+                                type: 'ajax-select',
+                                label: 'Pays',
+                                props: {
+                                    url: "http://data.okfn.org/data/core/country-list/r/data.json",
+                                    valueField: 'Code',
+                                    labelField: 'Name'
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }, {
+        ingredients: [
+            'Épaule',
+            'Gruyère',
+            'Pommes de terre'
+        ],
+        contact: {
+            country: 'FR'
+        }
+    }, undefined, function (form) {
+        document.body.appendChild(form.html());
+    });
+
+
+</script>
+</body>
+</html>
