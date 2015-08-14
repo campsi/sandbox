@@ -17,7 +17,8 @@ var Campsi = (function () {
         init: function (options, value, context) {
 
             this.options = options;
-            this.value = value || this.defaultValue;
+            this.defaultValue = options.default || this.defaultValue;
+            this.value = value || JSON.parse(JSON.stringify(this.defaultValue));
             this.context = context || value;
             this.callbacks = {change: [], error: []};
             this.modifiers = [];
@@ -27,7 +28,7 @@ var Campsi = (function () {
         },
         createInitialDomElements: function () {
             var d = this.dom = {};
-            d.root = $('<div class="field component">').addClass(this.name).addClass(this.parentName);
+            d.root = $('<div class="field component">');
 
 
             if (this.withLabel && this.options.label) {
@@ -46,6 +47,10 @@ var Campsi = (function () {
                 d.root.addClass('required');
             }
 
+            if (this.options.layout) {
+                d.root.addClass('layout-' + this.options.layout);
+            }
+
             d.control = $('<div class="control">');
             d.root.append(d.control);
 
@@ -55,7 +60,7 @@ var Campsi = (function () {
             }
         },
         val: function (value) {
-            if (value === undefined) {
+            if (arguments.length == 0) {
                 return this.value;
             }
             this.value = this.process(value);
@@ -86,7 +91,7 @@ var Campsi = (function () {
             return this.applyModifiers(value);
         },
         validate: function (value) {
-            if(this.options.required){
+            if (this.options.required) {
                 this.addError(String(value) === '', 'Missing required field');
             }
         },
@@ -127,8 +132,21 @@ var Campsi = (function () {
                 component: Component
             };
 
+            var callbacks = {};
+
             var get = function (name, onLoad) {
-                onLoad.call(this, map[name]);
+                if ($.isFunction(map[name])) {
+                    onLoad.call(this, map[name]);
+                } else if ($.isArray(callbacks[name])) {
+                    callbacks[name].push(function () {
+                        onLoad.call(this, map[name]);
+                    });
+                } else {
+                    callbacks[name] = [function () {
+                        onLoad.call(this, map[name])
+                    }];
+                    Campsi.loader.js('src/' + name + '/component.js');
+                }
             };
 
             var add = function (prototypeFactory) {
@@ -146,6 +164,20 @@ var Campsi = (function () {
                     component.prototype = Object.create($.extend({}, Parent.prototype, prototype));
                     component.constructor = Parent;
                     map[prototype.name] = component;
+
+                    if (prototype.style) {
+                        $(prototype.style).each(function (i, href) {
+                            Campsi.loader.css('src/' + prototype.name + '/' + href);
+                        });
+
+                    }
+
+                    if ($.isArray(callbacks[prototype.name])) {
+                        var i = 0, l = callbacks[prototype.name].length;
+                        for (; i < l; i++) {
+                            callbacks[prototype.name][i].call(this, map[prototype.name]);
+                        }
+                    }
                 });
             };
 

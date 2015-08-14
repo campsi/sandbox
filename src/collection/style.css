@@ -1,11 +1,52 @@
-.collection.component ul.items > li {
-
-    display: flex;
-
+.collection.component ul.items {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.collection.component ul.items > li > .drag-handle {
-    padding: 0.5em;
-    color: white;
+.collection-empty-item {
+    margin: -1px 0 0 0;
+    padding: 0;
+    list-style-type: none;
+    border: 1px solid #CCC;
+    display: flex;
+}
+
+.collection-empty-item .field {
+    flex: 1;
+}
+
+.collection-item {
+    display: flex;
+
+    margin: -1px 0 0 0;
+    width: 100%;
+    border: 1px solid #EEE;
+    box-sizing: border-box;
+}
+
+.collection-item > .drag-handle {
+    padding:    0.5em;
+    color:      white;
     background: black;
+}
+
+.collection-item > .field {
+    flex: 1;
+}
+
+.collection-item > button.remove {
+    border: none;
+    background: #666;
+    width: 2em;
+    height: 2em;
+    margin: 0.5em 0.5em 0 0;
+    color: white;
+    font-weight: bold;
+    border-radius: 1em;
+}
+
+.collection-item > button.remove:hover {
+    background: red;
 }

@@ -4,6 +4,8 @@ Campsi.components.add(function ($super) {
 
         name: 'select',
 
+        style: ['style.css'],
+
         init: function () {
             $super.init.apply(this, arguments);
 

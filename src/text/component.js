@@ -3,6 +3,8 @@ Campsi.components.add(function ($super) {
 
         name: 'text',
 
+        style: ['style.css'],
+
         init: function (options, value, context) {
 
             $super.init.apply(this, arguments);
@@ -17,6 +19,10 @@ Campsi.components.add(function ($super) {
             });
 
             input.val(this.value);
+
+            if(options.placeholder){
+                input.attr('placeholder');
+            }
 
             this.dom.control.append(input);
         },

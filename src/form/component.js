@@ -3,18 +3,22 @@ Campsi.components.add(function ($super) {
 
         name: 'form',
 
+        style: ['style.css'],
+
         defaultValue: {},
 
         init: function () {
             $super.init.apply(this, arguments);
+            this.dom.root.addClass('form');
 
-            var instance = this, props = this.options.props, fields = this.fields = [];
+            var instance = this, props = this.options.props;
+
+            this.fields = {};
+            this.fieldsCreated = 0;
 
             $(props.fields).each(function (i, fieldOptions) {
                 instance.createField(fieldOptions);
             });
-
-            this.dom.root.addClass('form');
 
         },
 
@@ -28,8 +32,10 @@ Campsi.components.add(function ($super) {
                 function (field) {
                     field.on('change', function () {
                         instance.value[fieldOptions.name] = field.val();
-                        //var errors = instance.validate(instance.value);
                         instance.trigger('change');
+                        if (field.errors.length == 0) {
+                            instance.dom.root.removeClass('error');
+                        }
                     });
 
                     field.on('error', function () {
@@ -38,10 +44,24 @@ Campsi.components.add(function ($super) {
                         instance.trigger('error');
                     });
 
-                    instance.fields.push(field);
-                    instance.dom.control.append(field.html());
+                    instance.fields[fieldOptions.name] = field;
+                    instance.fieldsCreated++;
+
+                    if (instance.fieldsCreated === instance.options.props.fields.length) {
+                        $(instance.options.props.fields).each(function (i, f) {
+                            instance.dom.control.append(instance.fields[f.name].html());
+                        });
+                    }
                 }
             );
+        },
+
+        update:function(){
+            var value = this.value;
+
+            $.each(this.fields, function(fieldName, field){
+                field.val(value[fieldName]);
+            });
         },
 
         validate: function () {

@@ -5,6 +5,8 @@ Campsi.components.add(function ($super) {
 
         name: 'collection',
 
+        style: ['style.css'],
+
         defaultValue: [],
 
         init: function (options, value, context) {
@@ -26,10 +28,10 @@ Campsi.components.add(function ($super) {
                 });
             });
 
-            d.list.appendTo(d.root);
+            d.list.appendTo(d.control);
 
             d.newItem = instance.createEmptyItem();
-            d.newItem.appendTo(d.root);
+            d.newItem.appendTo(d.control);
 
             var drake = dragula([d.list[0]], {
                 moves: function (el, container, handle) {
@@ -60,14 +62,13 @@ Campsi.components.add(function ($super) {
 
         createEmptyItem: function () {
             var instance = this,
-                $ul = $('<ul>'),
-                $li = $('<li>'),
+                $form = $('<form class="collection-empty-item">'),
                 $btn = $('<button>'),
                 options = $.extend({}, this.options.props.items, {required: false});
 
             Campsi.components.create(options, undefined, undefined, function (component) {
 
-                $btn.on('click', function () {
+                $form.on('submit', function () {
                     var value = component.val();
                     instance.createItemComponent(instance.value.length, value, function (item) {
 
@@ -78,18 +79,21 @@ Campsi.components.add(function ($super) {
                         instance.value.push(value);
                         instance.trigger('change');
 
-                        component.val('').focus();
-                    })
+                        console.info(component);
+                        component.val(component.defaultValue).focus();
+                    });
+
+                    return false;
 
                 });
 
-                $ul.append(
-                    $li.append(component.html()).append($btn.text('Add'))
+                $form.append(
+                    component.html()).append($('<div>').append($btn.text('Add'))
                 );
 
             });
 
-            return $ul;
+            return $form;
         },
 
         createItemComponent: function (index, item, callback) {
@@ -120,7 +124,7 @@ Campsi.components.add(function ($super) {
 
         createItemDom: function (index, component) {
             var instance = this,
-                $li = $('<li>'),
+                $li = $('<li class="collection-item">'),
                 $dragHandle = $('<div class="drag-handle">&VerticalBar;</div>'),
                 $removeButton = $('<button class="remove">&times;</button>');
 

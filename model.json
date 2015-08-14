@@ -1,0 +1,79 @@
+{
+    "type": "form",
+    "name": "pizza",
+    "props": {
+        "fields": [
+            {
+                "name": "name",
+                "type": "text",
+                "label": "Nom de la pizza",
+                "required": true,
+                "layout": "horizontal"
+            },
+            {
+                "name": "base",
+                "type": "select",
+                "label": "Base",
+                "layout": "horizontal",
+                "props": {
+                    "values": [
+                        { "label": "Tomate", "value": "tomato" },
+                        { "label": "Crême", "value": "cream" },
+                        { "label": "Rosée", "value": "rosado" }
+                    ], "valueField": "value", "labelField": "label"
+                }
+            },
+            {
+                "name": "ingredients",
+                "type": "collection",
+                "label": "Ingrédients",
+                "props": {
+                    "items": {
+                        "type": "form",
+                        "props": {
+                            "fields": [
+                                {
+                                    "type": "text",
+                                    "name": "name",
+                                    "label": "Nom",
+                                    "layout": "horizontal"
+                                }, {
+                                    "type": "checkbox",
+                                    "name": "vegan",
+                                    "label": "végétarien"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "name": "price", "type": "number", "label": "Prix", "required": true, "default": 10,
+                "layout": "horizontal"
+            },
+            {
+                "name": "contact",
+                "type": "form",
+                "label": "Contact",
+                "props": {
+                    "fields": [
+                        { "name": "name", "type": "text", "label": "Nom", "required": true },
+                        { "name": "address", "type": "text", "label": "Adresse" },
+                        { "name": "postcode", "type": "text", "label": "Code Postal", "props": { "beginsWith": "34" } },
+                        { "name": "city", "type": "text", "label": "Ville" },
+                        {
+                            "name": "country",
+                            "type": "ajax-select",
+                            "label": "Pays",
+                            "props": {
+                                "url": "http://data.okfn.org/data/core/country-list/r/data.json",
+                                "valueField": "Code",
+                                "labelField": "Name"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

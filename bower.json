@@ -6,7 +6,8 @@
     ],
     "dependencies": {
         "jquery": "*",
-        "dragula.js": "*"
+        "dragula.js": "*",
+        "HTML5-Reset": "*"
     },
     "license": "MIT",
     "ignore": [
