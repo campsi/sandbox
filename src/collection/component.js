@@ -9,6 +9,10 @@ Campsi.components.add(function ($super) {
 
         defaultValue: [],
 
+        defaultOptions: {
+            props: {withEmptyForm: true}
+        },
+
         init: function (options, value, context) {
 
             $super.init.apply(this, arguments);
@@ -18,6 +22,10 @@ Campsi.components.add(function ($super) {
             this.items = [];
 
             d.list = $('<ul class="items">');
+
+            if (options.props.placeholder) {
+                d.list.append($('<li class="placeholder">').text(options.props.placeholder))
+            }
 
             d.root.addClass('collection');
 
@@ -30,8 +38,10 @@ Campsi.components.add(function ($super) {
 
             d.list.appendTo(d.control);
 
-            d.newItem = instance.createEmptyItem();
-            d.newItem.appendTo(d.control);
+            if (options.props.withEmptyForm !== false) {
+                d.newItem = instance.createEmptyItem();
+                d.newItem.appendTo(d.control);
+            }
 
             var drake = dragula([d.list[0]], {
                 moves: function (el, container, handle) {
@@ -44,6 +54,7 @@ Campsi.components.add(function ($super) {
             });
         },
 
+
         reorderValueFromDOM: function () {
             var instance = this, items = this.items.slice(), newValue = [];
 
@@ -52,12 +63,34 @@ Campsi.components.add(function ($super) {
                 for (j; j < l; j++) {
                     if (items[j].html() == $(el).find('> .field')[0]) {
                         newValue.push(items[j]);
-                        //items.splice(j, 1);
                     }
                 }
             });
             instance.value = newValue;
             instance.trigger('change');
+        },
+
+        createItemAt: function (index, itemValue, callback) {
+
+            var instance = this;
+            instance.createItemComponent(index, itemValue, function (itemComponent) {
+
+                var itemEl = instance.createItemDom(instance.value.length, itemComponent);
+
+                instance.dom.list.find('> li').append(itemEl);
+                instance.items.push(index, 0, itemComponent);
+                instance.value.push(index, 0, itemValue);
+                instance.trigger('change');
+
+                callback.call(instance);
+            });
+        },
+
+        removeItemAt: function (index) {
+            this.dom.list.find('li').eq(index).remove();
+            this.items.splice(index, 1);
+            this.value.splice(index, 1);
+            this.trigger('change');
         },
 
         createEmptyItem: function () {
@@ -70,19 +103,9 @@ Campsi.components.add(function ($super) {
 
                 $form.on('submit', function () {
                     var value = component.val();
-                    instance.createItemComponent(instance.value.length, value, function (item) {
-
-                        var itemEl = instance.createItemDom(instance.value.length, item);
-
-                        instance.dom.list.append(itemEl);
-                        instance.items.push(item);
-                        instance.value.push(value);
-                        instance.trigger('change');
-
-                        console.info(component);
+                    instance.createItemAt(instance.value.length, value, function () {
                         component.val(component.defaultValue).focus();
                     });
-
                     return false;
 
                 });
@@ -99,11 +122,16 @@ Campsi.components.add(function ($super) {
         createItemComponent: function (index, item, callback) {
             var instance = this;
 
+
+            console.info("Campsi.components.create", instance.options.props.items, item, instance.context);
+
             Campsi.components.create(
-                this.options.props.items,
+                instance.options.props.items,
                 item,
-                this.context,
+                instance.context,
                 function (comp) {
+
+                    console.info("createdItem(name, options, value)", comp.name, comp.options, comp.value);
 
                     comp.index = index;
 
@@ -133,6 +161,7 @@ Campsi.components.add(function ($super) {
                 instance.value.splice(index, 1);
                 instance.trigger('change');
             });
+
 
             $li.append($dragHandle)
                 .append(component.html())

@@ -13,10 +13,13 @@ var Campsi = (function () {
         withErrors: true,
         withHelp: true,
         defaultValue: null,
+        defaultOptions: {props: {}},
 
         init: function (options, value, context) {
 
-            this.options = options;
+            this.options = $.extend({}, this.defaultOptions, options);
+
+            console.info(this.options);
             this.defaultValue = options.default || this.defaultValue;
             this.value = value || JSON.parse(JSON.stringify(this.defaultValue));
             this.context = context || value;
@@ -29,7 +32,8 @@ var Campsi = (function () {
         createInitialDomElements: function () {
             var d = this.dom = {};
             d.root = $('<div class="field component">');
-
+            d.root.append($('<pre class="debug">').text(this.name));
+            d.root.data('component', this);
 
             if (this.withLabel && this.options.label) {
                 d.label = $('<div class="label">');
@@ -124,6 +128,12 @@ var Campsi = (function () {
         },
         update: function () {
 
+        },
+        getDesignerFields: function(){
+
+        },
+        getPropsFormFields: function(){
+            return [];
         }
     });
     return {
@@ -162,7 +172,11 @@ var Campsi = (function () {
                         };
 
                     component.prototype = Object.create($.extend({}, Parent.prototype, prototype));
+
+
+
                     component.constructor = Parent;
+
                     map[prototype.name] = component;
 
                     if (prototype.style) {
@@ -182,8 +196,8 @@ var Campsi = (function () {
             };
 
             var create = function (options, value, context, onLoad) {
-                get(options.type, function (Component) {
-                    var component = new Component();
+                get(options.type, function (componentFactory) {
+                    var component = new componentFactory();
                     component.init(options, value, context);
                     if (onLoad) onLoad.call(this, component);
                 });

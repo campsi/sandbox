@@ -45,13 +45,38 @@ Campsi.components.add(function ($super) {
             return option;
         },
 
-        html:function(){
-            if(!this['optionsCreated'] ){
+        html: function () {
+            if (!this['optionsCreated']) {
                 this.createOptions();
                 this.optionsCreated = true;
             }
 
             return $super.html.call(this);
+        },
+
+        getDesignerFields: function () {
+            return [{
+                name: "values",
+                type: "collection",
+                label: "Values",
+                props: {
+                    items: {
+                        type: "form",
+                        props: {
+                            fields: [{
+                                name: "value",
+                                label: "Value",
+                                type: "text"
+                            }, {
+                                name: "name",
+                                label: "Name",
+                                type: "text"
+                            }]
+                        }
+                    }
+
+                }
+            }]
         }
 
     }

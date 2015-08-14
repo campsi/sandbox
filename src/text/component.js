@@ -39,6 +39,16 @@ Campsi.components.add(function ($super) {
             if (props['beginsWith']) {
                 this.addError((value.indexOf(props['beginsWith']) !== 0), 'value must begins with ' + props['beginsWith'])
             }
+        },
+
+        getPropsFormFields:function(){
+            return $super.getPropsFormFields().concat([
+                {
+                    name: 'beginsWith',
+                    type: 'text',
+                    label: 'Begins with'
+                }
+            ]);
         }
     }
 });

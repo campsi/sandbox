@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="src/reset.css"/>
     <link rel="stylesheet" href="lib/dragula.js/dist/dragula.min.css"/>
-    <title></title>
+    <title>Campsi UI</title>
     <style>
         body {
             font-family: "Avenir Next";
@@ -23,6 +23,10 @@
             font-size: 0.85em;
         }
 
+        .field > .control {
+            min-height: 2.2em;
+        }
+
         .field .label, .field .control {
             padding: 0.5em 0;
         }
@@ -39,13 +43,13 @@
         }
 
         .field.layout-horizontal {
-            display: flex;
+            display:         flex;
             justify-content: center;
         }
 
         .field.layout-horizontal > .label {
             margin-right: 1em;
-            align-self: center;
+            align-self:   center;
         }
 
         .field.layout-horizontal > .control {
@@ -53,40 +57,113 @@
         }
 
         body.outline .control {
-            outline: 1px inset #a2ff21;
+            outline:    1px inset #a2ff21;
             background: rgba(162, 255, 33, 0.23);
         }
 
         body.outline .label {
-            outline: 1px inset #ff5354;
+            outline:    1px inset #ff5354;
             background: rgba(255, 83, 84, 0.23);
         }
 
         body.outline .field {
-            outline: 1px inset lightblue;
+            outline:    1px inset lightblue;
             background: rgba(173, 216, 230, 0.23);
+        }
+
+        #components {
+            list-style: none;
+        }
+
+        li.component-drag {
+            list-style:    none;
+            background:    linear-gradient(deepskyblue, dodgerblue);
+            color:         white;
+            padding:       1em;
+            border-radius: .3em;
+            float:         left;
+            margin:        .5em;
+        }
+
+        li.component-drag.gu-transit {
+            float:    none;
+            position: relative;
+            padding:  0;
+        }
+
+        #designer {
+            clear: left;
         }
     </style>
 </head>
-<body class="outline">
+<body>
+<button onclick="toggleOutline()">Show borders</button>
+<ul id="components">
+    <li class="component-drag" data-name="ajax-select">Ajax Select</li>
+    <li class="component-drag" data-name="checkbox">Checkbox</li>
+    <li class="component-drag" data-name="collection">Collection</li>
+    <li class="component-drag" data-name="form">Form</li>
+    <li class="component-drag" data-name="number">Number</li>
+    <li class="component-drag" data-name="select">Select</li>
+    <li class="component-drag" data-name="text">Text</li>
+</ul>
+<div id="designer">
 
-<button onclick="$('body').toggleClass('outline')">Show borders</button>
+</div>
+
 <script type="application/javascript" src="lib/jquery/dist/jquery.min.js"></script>
 <script type="application/javascript" src="lib/dragula.js/dist/dragula.js"></script>
 <script type="application/javascript" src="src/campsi.core.js"></script>
 <script type="application/javascript" src="src/campsi.loader.js"></script>
 <script>
 
-    $.getJSON('model.json', function (model) {
-        Campsi.components.create(model, {
-            contact: {
-                country: 'FR'
-            }
-        }, undefined, function (form) {
-            document.body.appendChild(form.html());
-        });
+    var components = ['ajax-select', 'checkbox', 'checkbox-group', 'collection', 'form', 'number', 'select', 'text'];
 
+    var componentsDrake = dragula({
+        containers: [document.getElementById('components')],
+        isContainer: function (el) {
+            return (el.className.indexOf('components-list') >= 0);
+        },
+        accepts: function (el, target, source, sibling) {
+            return (target.className.indexOf('components-list') >= 0);
+        },
+        copy: true
     });
+
+    componentsDrake.on('drop', function (el, target, source) {
+        var $el = $(el),
+                designerCollection = $(target).data('component');
+        designerCollection.addField({type: $(el).data('name')});
+        $el.remove();
+    });
+    var outline = localStorage.getItem('outline') == 'true';
+
+    if (outline) {
+        $('body').addClass('outline');
+    }
+
+    function toggleOutline() {
+        outline = !outline;
+        $('body').toggleClass('outline', outline);
+        localStorage.setItem('outline', outline);
+    }
+
+    Campsi.components.create({type: 'designer-collection'}, null, null, function (designerCollection) {
+        $('#designer').append(designerCollection.html());
+    });
+
+    /*    var myForm;
+
+     $.getJSON('model.json', function (model) {
+     Campsi.components.create(model, {
+     contact: {
+     country: 'FR'
+     }
+     }, undefined, function (form) {
+     myForm = form;
+     document.body.appendChild(form.html());
+     });
+     });*/
 
 </script>
 </body>

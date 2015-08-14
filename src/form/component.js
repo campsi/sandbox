@@ -10,16 +10,22 @@ Campsi.components.add(function ($super) {
         init: function () {
             $super.init.apply(this, arguments);
             this.dom.root.addClass('form');
-
-            var instance = this, props = this.options.props;
-
+            this.dom.fields = {};
             this.fields = {};
             this.fieldsCreated = 0;
 
+            if (this.options.props && this.options.props.fields) {
+                this.createFields();
+            }
+
+
+        },
+
+        createFields: function () {
+            var instance = this, props = this.options.props;
             $(props.fields).each(function (i, fieldOptions) {
                 instance.createField(fieldOptions);
             });
-
         },
 
         createField: function (fieldOptions) {
@@ -48,18 +54,39 @@ Campsi.components.add(function ($super) {
                     instance.fieldsCreated++;
 
                     if (instance.fieldsCreated === instance.options.props.fields.length) {
+
                         $(instance.options.props.fields).each(function (i, f) {
-                            instance.dom.control.append(instance.fields[f.name].html());
+                            instance.dom.fields[f.name] = instance.fields[f.name].html();
+                            instance.dom.control.append(instance.dom.fields[f.name]);
                         });
+
+                        instance.allFieldsCreated();
                     }
                 }
             );
         },
 
-        update:function(){
+        allFieldsCreated: function () {
+
+        },
+
+        getDesignerFields: function () {
+            return [
+                {
+                    type: "collection",
+                    name: "fields",
+                    props: {
+                        type: "field",
+                        withEmptyForm: false
+                    }
+                }
+            ];
+        },
+
+        update: function () {
             var value = this.value;
 
-            $.each(this.fields, function(fieldName, field){
+            $.each(this.fields, function (fieldName, field) {
                 field.val(value[fieldName]);
             });
         },
@@ -68,4 +95,5 @@ Campsi.components.add(function ($super) {
 
         }
     }
-});
+})
+;
