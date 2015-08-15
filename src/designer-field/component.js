@@ -21,22 +21,15 @@ Campsi.components.extend('form', function ($super) {
 
         style: ['style.css'],
 
-        init: function (options, value, context) {
+        init: function (options, value, context, callback) {
 
             var instance = this;
+            var alteredOptions = JSON.parse(JSON.stringify(options));
 
-
-            $super.init.apply(instance, arguments);
-
-
-            this.dom.root.addClass('designer-field');
             Campsi.components.get(value.type, function (component) {
 
-                instance.component = component;
-
-                options.props = options.props || {};
-
-                instance.options.props.fields = [{
+                alteredOptions.props = alteredOptions.props || {};
+                alteredOptions.props.fields = [{
                     type: 'text',
                     name: 'label',
                     label: 'Label',
@@ -51,15 +44,19 @@ Campsi.components.extend('form', function ($super) {
                     required: true
                 }];
 
-                var componentDesignerFields = component.prototype.getDesignerFields.call(instance);
 
+                var componentDesignerFields = component.prototype.getDesignerFields.call();
 
                 if (componentDesignerFields) {
-                    instance.options.props.fields = instance.options.props.fields.concat(componentDesignerFields);
+                    alteredOptions.props.fields = alteredOptions.props.fields.concat(componentDesignerFields);
                 }
 
-                instance.createFields();
+                $super.init.call(instance, alteredOptions, value,  context, callback);
 
+                instance.dom.root.addClass('designer-field');
+                instance.dom.root.append($('<p class="type">').text(alteredOptions.props.type));
+                instance.component = component;
+                instance.createFields();
             });
         },
         allFieldsCreated: function () {

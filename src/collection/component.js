@@ -17,33 +17,60 @@ Campsi.components.add(function ($super) {
 
             $super.init.apply(this, arguments);
 
-            var instance = this, d = this.dom;
-
-            this.items = [];
-
-            d.list = $('<ul class="items">');
+            this.dom.root.addClass('collection');
 
             if (options.props.placeholder) {
-                d.list.append($('<li class="placeholder">').text(options.props.placeholder))
+                this.createPlaceholder();
             }
 
-            d.root.addClass('collection');
+            this.dom.list = $('<ul class="items">');
+            this.dom.control.append(this.dom.list);
+
+
+            this.createItems();
+
+            if (options.props.withEmptyForm !== false) {
+                this.createEmptyItem();
+            }
+        },
+
+        createPlaceholder: function () {
+            this.dom.control.append($('<p class="placeholder">').text(this.prop('placeholder')));
+        },
+
+        createItems: function () {
+            var instance = this;
+            instance.items = [];
 
             $(instance.value).each(function (i, item) {
                 instance.createItemComponent(i, item, function (component) {
-                    d.list.append(instance.createItemDom(i, component));
-                    instance.items.push(component);
+
+                    instance.items.push({
+                        component: component,
+                        dom: instance.createItemDom(i, component)
+                    });
+
+                    if(instance.items.length == instance.value.length){
+                        instance.allItemsCreated();
+                    }
                 });
             });
+        },
 
-            d.list.appendTo(d.control);
+        allItemsCreated: function(){
+            console.info('allItemsCreated');
+            var instance = this;
 
-            if (options.props.withEmptyForm !== false) {
-                d.newItem = instance.createEmptyItem();
-                d.newItem.appendTo(d.control);
-            }
+            $(instance.items).each(function(i, item){
+                instance.dom.list.append(item.dom);
+            });
+        },
 
-            var drake = dragula([d.list[0]], {
+        initDragnDrop: function () {
+
+            var instance = this;
+
+            var drake = dragula([this.dom.list[0]], {
                 moves: function (el, container, handle) {
                     return handle.className === 'drag-handle';
                 }
@@ -54,14 +81,13 @@ Campsi.components.add(function ($super) {
             });
         },
 
-
         reorderValueFromDOM: function () {
             var instance = this, items = this.items.slice(), newValue = [];
 
             this.dom.list.find('li').each(function (i, el) {
                 var j = 0, l = items.length;
                 for (j; j < l; j++) {
-                    if (items[j].html() == $(el).find('> .field')[0]) {
+                    if (items[j].component.html() == el) {
                         newValue.push(items[j]);
                     }
                 }
@@ -77,7 +103,7 @@ Campsi.components.add(function ($super) {
 
                 var itemEl = instance.createItemDom(instance.value.length, itemComponent);
 
-                instance.dom.list.find('> li').append(itemEl);
+                instance.dom.list.find('> li').eq(index).before(itemEl);
                 instance.items.push(index, 0, itemComponent);
                 instance.value.push(index, 0, itemValue);
                 instance.trigger('change');
@@ -94,12 +120,14 @@ Campsi.components.add(function ($super) {
         },
 
         createEmptyItem: function () {
+
             var instance = this,
-                $form = $('<form class="collection-empty-item">'),
-                $btn = $('<button>'),
-                options = $.extend({}, this.options.props.items, {required: false});
+                options = $.extend({}, this.prop('items', {}), {required: false}); // the new item should not be required, righhht ?
 
             Campsi.components.create(options, undefined, undefined, function (component) {
+
+                var $form = instance.dom.newItem = $('<form class="collection-empty-item">'),
+                    $btn = $('<button>').text('Add');
 
                 $form.on('submit', function () {
                     var value = component.val();
@@ -110,20 +138,17 @@ Campsi.components.add(function ($super) {
 
                 });
 
-                $form.append(
-                    component.html()).append($('<div>').append($btn.text('Add'))
-                );
-
+                $form.append(component.html());
+                $form.append($btn.text('Add'));
+                instance.dom.control.append($form);
             });
-
-            return $form;
         },
 
         createItemComponent: function (index, item, callback) {
             var instance = this;
 
 
-            console.info("Campsi.components.create", instance.options.props.items, item, instance.context);
+            //console.info("Campsi.components.create", instance.options.props.items, item, instance.context);
 
             Campsi.components.create(
                 instance.options.props.items,
@@ -131,7 +156,7 @@ Campsi.components.add(function ($super) {
                 instance.context,
                 function (comp) {
 
-                    console.info("createdItem(name, options, value)", comp.name, comp.options, comp.value);
+                    //console.info("createdItem(name, options, value)", comp.name, comp.options, comp.value);
 
                     comp.index = index;
 
@@ -158,6 +183,9 @@ Campsi.components.add(function ($super) {
 
             $removeButton.on('click', function () {
                 $li.remove();
+
+                // todo replace by removeItemAt
+
                 instance.value.splice(index, 1);
                 instance.trigger('change');
             });

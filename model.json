@@ -4,24 +4,6 @@
     "props": {
         "fields": [
             {
-                "name": "myCollection",
-                "type": "designer-collection",
-                "label": "Collection"
-            },
-            {
-                "name": "Test",
-                "type": "designer-field",
-                "name": "test"
-            },
-            {
-                "name": "Test",
-                "type": "designer-field",
-                "name": "field2",
-                "props": {
-                    "type": "select"
-                }
-            },
-            {
                 "name": "name",
                 "type": "text",
                 "label": "Nom de la pizza",

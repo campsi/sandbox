@@ -7,7 +7,7 @@
     <title>Campsi UI</title>
     <style>
         body {
-            font-family: "Avenir Next";
+            font-family: HelveticaNeue;
         }
 
         * {
@@ -88,12 +88,17 @@
         li.component-drag.gu-transit {
             float:    none;
             position: relative;
-            padding:  0;
+            padding:  1em;
         }
 
         #designer {
             clear: left;
         }
+
+        .debug {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -121,12 +126,6 @@
 
     var componentsDrake = dragula({
         containers: [document.getElementById('components')],
-        isContainer: function (el) {
-            return (el.className.indexOf('components-list') >= 0);
-        },
-        accepts: function (el, target, source, sibling) {
-            return (target.className.indexOf('components-list') >= 0);
-        },
         copy: true
     });
 
@@ -148,22 +147,15 @@
         localStorage.setItem('outline', outline);
     }
 
-    Campsi.components.create({type: 'designer-collection'}, null, null, function (designerCollection) {
-        $('#designer').append(designerCollection.html());
+
+    var dc;
+
+    $.getJSON('model.json', function (model) {
+        Campsi.components.create({type: 'designer-collection'}, model, null, function (designerCollection) {
+            dc = designerCollection;
+            $('#designer').append(designerCollection.html());
+        });
     });
-
-    /*    var myForm;
-
-     $.getJSON('model.json', function (model) {
-     Campsi.components.create(model, {
-     contact: {
-     country: 'FR'
-     }
-     }, undefined, function (form) {
-     myForm = form;
-     document.body.appendChild(form.html());
-     });
-     });*/
 
 </script>
 </body>

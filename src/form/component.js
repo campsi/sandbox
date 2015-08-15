@@ -7,18 +7,17 @@ Campsi.components.add(function ($super) {
 
         defaultValue: {},
 
+
         init: function () {
             $super.init.apply(this, arguments);
             this.dom.root.addClass('form');
             this.dom.fields = {};
-            this.fields = {};
-            this.fieldsCreated = 0;
+            this._fields = {};
+            this._fieldsCreated = 0;
 
             if (this.options.props && this.options.props.fields) {
                 this.createFields();
             }
-
-
         },
 
         createFields: function () {
@@ -50,13 +49,13 @@ Campsi.components.add(function ($super) {
                         instance.trigger('error');
                     });
 
-                    instance.fields[fieldOptions.name] = field;
-                    instance.fieldsCreated++;
+                    instance._fields[fieldOptions.name] = field;
+                    instance._fieldsCreated++;
 
-                    if (instance.fieldsCreated === instance.options.props.fields.length) {
+                    if (instance._fieldsCreated === instance.options.props.fields.length) {
 
                         $(instance.options.props.fields).each(function (i, f) {
-                            instance.dom.fields[f.name] = instance.fields[f.name].html();
+                            instance.dom.fields[f.name] = instance._fields[f.name].html();
                             instance.dom.control.append(instance.dom.fields[f.name]);
                         });
 

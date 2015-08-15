@@ -5,6 +5,7 @@ var Campsi = (function () {
      * @constructor
      */
     var Component = function () {
+        this.callbacks = {change: [], error: []};
     };
 
     Component.prototype = Object.create({
@@ -14,21 +15,27 @@ var Campsi = (function () {
         withHelp: true,
         defaultValue: null,
         defaultOptions: {props: {}},
+        previousValue: null,
 
-        init: function (options, value, context) {
+        init: function (options, value, context, callback) {
 
             this.options = $.extend({}, this.defaultOptions, options);
 
-            console.info(this.options);
             this.defaultValue = options.default || this.defaultValue;
             this.value = value || JSON.parse(JSON.stringify(this.defaultValue));
             this.context = context || value;
-            this.callbacks = {change: [], error: []};
             this.modifiers = [];
             this.errors = [];
 
             this.createInitialDomElements();
+
+            callback.call(this, this);
         },
+
+        prop: function(name, returnIfUndefined){
+            return this.options.props[name] || returnIfUndefined;
+        },
+
         createInitialDomElements: function () {
             var d = this.dom = {};
             d.root = $('<div class="field component">');
@@ -67,7 +74,11 @@ var Campsi = (function () {
             if (arguments.length == 0) {
                 return this.value;
             }
+
+            this.previousValue = JSON.parse(JSON.stringify(this.value));
+            //this.valueHistory.push(this.previousValue);
             this.value = this.process(value);
+
             this.update();
 
             return this;
@@ -111,6 +122,10 @@ var Campsi = (function () {
             this.dom.control.find('select,input')[0].focus();
         },
         on: function (eventName, callback) {
+            if (!this.callbacks[eventName]) {
+                this.callbacks[eventName] = [];
+            }
+
             this.callbacks[eventName].push(callback);
         },
         trigger: function (eventName) {
@@ -145,6 +160,9 @@ var Campsi = (function () {
             var callbacks = {};
 
             var get = function (name, onLoad) {
+                if(name == undefined){
+                    throw new Error('undefined component name');
+                }
                 if ($.isFunction(map[name])) {
                     onLoad.call(this, map[name]);
                 } else if ($.isArray(callbacks[name])) {
@@ -198,8 +216,7 @@ var Campsi = (function () {
             var create = function (options, value, context, onLoad) {
                 get(options.type, function (componentFactory) {
                     var component = new componentFactory();
-                    component.init(options, value, context);
-                    if (onLoad) onLoad.call(this, component);
+                    component.init(options, value, context, onLoad);
                 });
             };
 
