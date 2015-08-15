@@ -32,8 +32,8 @@ var Campsi = (function () {
             callback.call(this, this);
         },
 
-        prop: function(name, returnIfUndefined){
-            return this.options.props[name] || returnIfUndefined;
+        prop: function (name, returnIfUndefined) {
+            return this.options.props[name] || returnIfUndefined;
         },
 
         createInitialDomElements: function () {
@@ -46,6 +46,8 @@ var Campsi = (function () {
                 d.label = $('<div class="label">');
                 d.label.append('<span>').text(this.options.label);
                 d.root.append(d.label);
+            } else {
+                d.root.addClass('without-label');
             }
 
             if (this.withHelp && this.options.help) {
@@ -75,7 +77,9 @@ var Campsi = (function () {
                 return this.value;
             }
 
-            this.previousValue = JSON.parse(JSON.stringify(this.value));
+            if (this.value) {
+                this.previousValue = JSON.parse(JSON.stringify(this.value));
+            }
             //this.valueHistory.push(this.previousValue);
             this.value = this.process(value);
 
@@ -144,10 +148,10 @@ var Campsi = (function () {
         update: function () {
 
         },
-        getDesignerFields: function(){
+        getDesignerFields: function () {
 
         },
-        getPropsFormFields: function(){
+        getPropsFormFields: function () {
             return [];
         }
     });
@@ -160,7 +164,7 @@ var Campsi = (function () {
             var callbacks = {};
 
             var get = function (name, onLoad) {
-                if(name == undefined){
+                if (name == undefined) {
                     throw new Error('undefined component name');
                 }
                 if ($.isFunction(map[name])) {
@@ -190,7 +194,6 @@ var Campsi = (function () {
                         };
 
                     component.prototype = Object.create($.extend({}, Parent.prototype, prototype));
-
 
 
                     component.constructor = Parent;

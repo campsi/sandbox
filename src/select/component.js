@@ -66,11 +66,13 @@ Campsi.components.add(function ($super) {
                             fields: [{
                                 name: "value",
                                 label: "Value",
-                                type: "text"
+                                type: "text",
+                                layout: "horizontal"
                             }, {
-                                name: "name",
-                                label: "Name",
-                                type: "text"
+                                name: "label",
+                                label: "Label",
+                                type: "text",
+                                layout: "horizontal"
                             }]
                         }
                     }

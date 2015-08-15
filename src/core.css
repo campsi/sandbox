@@ -1,0 +1,103 @@
+body {
+    font-family: HelveticaNeue;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+input {
+    font-size: 0.85em;
+}
+
+.field {
+    position:      relative;
+    margin-bottom: 0.5rem;
+}
+
+.field > .label {
+    font-size: 0.8em;
+    line-height: 2em;
+    color: #6d6d6d;
+}
+
+.field > .control {
+    
+}
+
+.field .label, .field .control {
+}
+
+.field.error > .label {
+    color: red;
+}
+
+.field.required {
+    padding-right: 1rem;
+}
+
+.field.required > span.required {
+    position: absolute;
+    right: 0.25rem;
+    top: 0.25rem;
+    color:    red;
+    font-size: 1rem;
+}
+
+.field.layout-horizontal {
+    display:         flex;
+    justify-content: center;
+}
+
+.field.layout-horizontal > .label {
+    margin-right: 1rem;
+    align-self:   center;
+}
+
+.field.layout-horizontal > .control {
+    flex: 1;
+    align-self:   center;
+}
+
+body.outline .control {
+    outline:    1px inset #a2ff21;
+    background: rgba(162, 255, 33, 0.23);
+}
+
+body.outline .label {
+    outline:    1px inset #ff5354;
+    background: rgba(255, 83, 84, 0.23);
+}
+
+body.outline .field {
+    outline:    1px inset lightblue;
+    background: rgba(173, 216, 230, 0.23);
+}
+
+#components {
+    list-style: none;
+}
+
+li.component-drag {
+    list-style:    none;
+    background:    linear-gradient(deepskyblue, dodgerblue);
+    color:         white;
+    padding:       1em;
+    border-radius: .3em;
+    float:         left;
+    margin:        .5em;
+}
+
+li.component-drag.gu-transit {
+    float:    none;
+    position: relative;
+    padding:  1em;
+}
+
+#designer {
+    clear: left;
+}
+
+.debug {
+    display: none;
+}

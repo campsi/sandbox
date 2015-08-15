@@ -33,11 +33,13 @@ Campsi.components.extend('form', function ($super) {
                     type: 'text',
                     name: 'label',
                     label: 'Label',
-                    required: true
+                    required: true,
+                    layout: 'horizontal'
                 }, {
                     type: 'text',
                     name: 'name',
                     label: 'Name',
+                    layout: 'horizontal',
                     props: {
                         matches: '^[a-zA-Z_-][a-zA-Z0-9_-]?'
                     },
@@ -48,31 +50,46 @@ Campsi.components.extend('form', function ($super) {
                 var componentDesignerFields = component.prototype.getDesignerFields.call();
 
                 if (componentDesignerFields) {
-                    alteredOptions.props.fields = alteredOptions.props.fields.concat(componentDesignerFields);
+                    alteredOptions.props.fields.push({
+                        name: 'props',
+                        type: 'form',
+                        props: {
+                            fields: componentDesignerFields
+                        }
+                    });
                 }
 
-                $super.init.call(instance, alteredOptions, value,  context, callback);
+                $super.init.call(instance, alteredOptions, value, context, callback);
 
                 instance.dom.root.addClass('designer-field');
-                instance.dom.root.append($('<p class="type">').text(alteredOptions.props.type));
+
+                instance.dom.control.prepend($('<h2 class="type">').text(value.type));
+
+
                 instance.component = component;
                 instance.createFields();
+
+
             });
         },
         allFieldsCreated: function () {
-            console.info(this.name, this.value, this.options);
-            var instance = this;/*
-            instance.fields.label.on('change', function () {
-                instance.fields.name.val(sanitize(this.val()));
-                instance.fields.name.trigger('change');
+            var instance = this;
+
+            $(instance.dom.fields['label']).addClass('label-field');
+            $(instance.dom.fields['name']).addClass('name-field');
+
+            instance._fields.label.on('change', function () {
+                instance._fields.name.val(sanitize(this.val()));
+                instance._fields.name.trigger('change');
             });
-*/
-            var propsBtn = $('<button>Properties</button>');
+
+            var propsBtn = $('<button class="properties">Properties</button>');
 
             propsBtn.on('click', function () {
                 instance.trigger('showProps');
             });
-            this.dom.root.append(propsBtn);
+
+            this.dom.control.append(propsBtn);
         },
 
         propsForm: function (callback) {

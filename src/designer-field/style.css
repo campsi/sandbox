@@ -1,5 +1,22 @@
-.designer-field {
-    border: 1px solid #999;
-    border-radius: 0.5em;
-    margin-bottom: 1em;
+.designer-field.component > .control > .component > .label {
+    width:5rem;
+}
+
+.designer-field.component > .name-field {
+    font-size: 0.7em;
+}
+
+.designer-field.component > .control > .form.component {
+    padding: 0;
+}
+
+.designer-field.component button.properties {
+display: none;
+}
+
+.designer-field.component h2 {
+    background: dodgerblue;
+    color: white;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
 }

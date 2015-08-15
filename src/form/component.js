@@ -17,6 +17,8 @@ Campsi.components.add(function ($super) {
 
             if (this.options.props && this.options.props.fields) {
                 this.createFields();
+            } else {
+                console.info('none', this.dom.root[0] )
             }
         },
 
@@ -74,9 +76,12 @@ Campsi.components.add(function ($super) {
                 {
                     type: "collection",
                     name: "fields",
+                    label: "Fields",
                     props: {
-                        type: "field",
-                        withEmptyForm: false
+                        withEmptyForm: false,
+                        items: {
+                            type: "designer-field" // todo créer designer-field
+                        }
                     }
                 }
             ];
@@ -85,7 +90,7 @@ Campsi.components.add(function ($super) {
         update: function () {
             var value = this.value;
 
-            $.each(this.fields, function (fieldName, field) {
+            $.each(this._fields, function (fieldName, field) {
                 field.val(value[fieldName]);
             });
         },

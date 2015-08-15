@@ -21,6 +21,22 @@ Campsi.components.extend('select', function ($super) {
                 instance.update();
             });
 
+        },
+        getDesignerFields:function() {
+            return [{
+                type: 'text',
+                name: 'url',
+                label: 'URL'
+            },{
+                type: 'text',
+                name: 'labelField',
+                label: 'Label field'
+            },{
+                type: 'text',
+                name: 'valueField',
+                label: 'Value field'
+            }];
         }
+
     }
 });

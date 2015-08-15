@@ -1,17 +1,21 @@
+.collection.component {
+    padding-right: 0;
+}
+
 .collection.component ul.items {
     list-style-type: none;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    min-height: 4em;
+    margin:          0;
+    padding:         0;
+    box-sizing:      border-box;
+    /* min-height:      4em; */
 }
 
 .collection-empty-item {
-    margin: -1px 0 0 0;
-    padding: 0;
+    margin:          -1px 0 0 0;
+    padding:         0;
     list-style-type: none;
-    border: 1px solid #CCC;
-    display: flex;
+    border:          1px solid #ccc;
+    display:         flex;
 }
 
 .collection-empty-item .field {
@@ -19,18 +23,32 @@
 }
 
 .collection-item {
-    display: flex;
-
-    margin: -1px 0 0 0;
-    width: 100%;
-    border: 1px solid #EEE;
+    display:    flex;
+    margin:     -1px 0 0.5rem 0;
+    width:      100%;
+    border: 1px solid #eee;
     box-sizing: border-box;
+    border-radius: 0.5rem;
+
+}
+
+.collection-item:first-child {
+    margin-top: 0;
 }
 
 .collection-item > .drag-handle {
-    padding:    0.5em;
-    color:      white;
-    background: black;
+    padding:             0.2rem;
+    width:               2em;
+    color:               transparent;
+    background-size:     1em;
+    background-position: center;
+    background-repeat:   no-repeat;
+    background-color:    rgba(0, 0, 0, 0.1);
+    border-radius: 0.4em 0 0 0.4em;
+}
+
+.collection-item:hover > .drag-handle {
+    background-image: url(drag-icon.png);
 }
 
 .collection-item > .field {
@@ -38,16 +56,29 @@
 }
 
 .collection-item > button.remove {
-    border: none;
-    background: #666;
-    width: 2em;
-    height: 2em;
-    margin: 0.5em 0.5em 0 0;
-    color: white;
-    font-weight: bold;
-    border-radius: 1em;
+    border:          none;
+    background:      url(remove-icon.png);
+    background-size: contain;
+    opacity:         0;
+    width:           2em;
+    height:          2em;
+    margin:          0;
+    color:           transparent;
+    cursor:          pointer;
+    align-self:      center;
+}
+
+.collection-item:hover > button.remove {
+    opacity: 1
 }
 
 .collection-item > button.remove:hover {
-    background: red;
+    background-image: url(remove-icon-hover.png);
+}
+
+.collection.component p.placeholder {
+    text-align: center;
+    padding:    1.1em;
+    font-style: italic;
+    opacity:    0.4;
 }

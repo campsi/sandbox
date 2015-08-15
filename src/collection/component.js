@@ -58,16 +58,19 @@ Campsi.components.add(function ($super) {
         },
 
         allItemsCreated: function(){
-            console.info('allItemsCreated');
+
             var instance = this;
 
             $(instance.items).each(function(i, item){
                 instance.dom.list.append(item.dom);
             });
+
+            this.initDragnDrop();
         },
 
         initDragnDrop: function () {
 
+            console.info('dragula init !');
             var instance = this;
 
             var drake = dragula([this.dom.list[0]], {
