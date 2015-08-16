@@ -33,14 +33,29 @@
 
     var componentsDrake = dragula({
         containers: [document.getElementById('components')],
-        copy: true
+        copy: true,
+        isContainer: function (el) {
+            return (el.tagName === 'UL' && el.className.indexOf('component-dropzone') > -1);
+        },
+        invalid:function(el, target){
+            return (el.className.indexOf('component-drag') === -1)
+        }
     });
 
-    componentsDrake.on('drop', function (el, target, source) {
-        var $el = $(el),
-                designerCollection = $(target).data('component');
-        designerCollection.addField({type: $(el).data('name')});
-        $el.remove();
+    componentsDrake.on('drop', function (dragged, container, source) {
+
+        if (source === document.getElementById('components')) {
+            var $comp = $(dragged);
+            var compValue = {type: $comp.data('name')};
+            var designerForm = $(container).data('component');
+
+            designerForm.createItemAt($comp.index(), compValue);
+            $comp.remove();
+        }
+        /*var $el = $(el),
+         designerCollection = $(target).data('component');
+         designerCollection.addField({type: $(el).data('name')});
+         $el.remove();*/
     });
     var outline = localStorage.getItem('outline') == 'true';
 

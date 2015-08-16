@@ -7,29 +7,37 @@
     margin:          0;
     padding:         0;
     box-sizing:      border-box;
-    /* min-height:      4em; */
+    min-height:      4rem;
 }
 
 .collection-empty-item {
-    margin:          -1px 0 0 0;
     padding:         0;
     list-style-type: none;
-    border:          1px solid #ccc;
     display:         flex;
 }
 
 .collection-empty-item .field {
     flex: 1;
 }
+.collection-empty-item > button.new-collection-item {
+    background: dodgerblue;
+    border:none;
+    color: white;
+    margin-bottom: -1px;
+    margin-top: -1px;
+    font-weight: bold;
+}
 
-.collection-item {
+.collection-item, .collection-empty-item {
     display:    flex;
     margin:     -1px 0 0.5rem 0;
     width:      100%;
-    border: 1px solid #eee;
+    border: 1px solid #cfcfcf;
+    border-bottom: 3px solid rgba(56, 56, 56, 0.3);
     box-sizing: border-box;
     border-radius: 0.5rem;
-
+    background: #FFF;
+    overflow: hidden;
 }
 
 .collection-item:first-child {
@@ -40,6 +48,7 @@
     padding:             0.2rem;
     width:               2em;
     color:               transparent;
+    background-image: url(drag-icon.png);
     background-size:     1em;
     background-position: center;
     background-repeat:   no-repeat;
@@ -53,13 +62,14 @@
 
 .collection-item > .field {
     flex: 1;
+    margin-bottom: 0;
 }
 
 .collection-item > button.remove {
     border:          none;
     background:      url(remove-icon.png);
     background-size: contain;
-    opacity:         0;
+    opacity:         0.3;
     width:           2em;
     height:          2em;
     margin:          0;
@@ -81,4 +91,7 @@
     padding:    1.1em;
     font-style: italic;
     opacity:    0.4;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
 }

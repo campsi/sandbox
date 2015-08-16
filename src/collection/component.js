@@ -10,7 +10,7 @@ Campsi.components.add(function ($super) {
         defaultValue: [],
 
         defaultOptions: {
-            props: {withEmptyForm: true}
+            props: {withEmptyForm: false}
         },
 
         init: function (options, value, context) {
@@ -19,7 +19,7 @@ Campsi.components.add(function ($super) {
 
             this.dom.root.addClass('collection');
 
-            if (options.props.placeholder) {
+            if (this.options.props.placeholder) {
                 this.createPlaceholder();
             }
 
@@ -29,7 +29,7 @@ Campsi.components.add(function ($super) {
 
             this.createItems();
 
-            if (options.props.withEmptyForm !== false) {
+            if (this.options.props.withEmptyForm !== false) {
                 this.createEmptyItem();
             }
         },
@@ -46,22 +46,27 @@ Campsi.components.add(function ($super) {
                 instance.createItemComponent(i, item, function (component) {
 
                     instance.items.push({
+                        index: i,
                         component: component,
                         dom: instance.createItemDom(i, component)
                     });
 
-                    if(instance.items.length == instance.value.length){
+                    if (instance.items.length == instance.value.length) {
                         instance.allItemsCreated();
                     }
                 });
             });
         },
 
-        allItemsCreated: function(){
+        allItemsCreated: function () {
 
             var instance = this;
 
-            $(instance.items).each(function(i, item){
+            instance.items.sort(function (a, b) {
+                return a.index - b.index;
+            });
+
+            $(instance.items).each(function (i, item) {
                 instance.dom.list.append(item.dom);
             });
 
@@ -70,12 +75,14 @@ Campsi.components.add(function ($super) {
 
         initDragnDrop: function () {
 
-            console.info('dragula init !');
             var instance = this;
 
             var drake = dragula([this.dom.list[0]], {
                 moves: function (el, container, handle) {
-                    return handle.className === 'drag-handle';
+                    var $item = $(handle).closest('.collection-item'),
+                        $list = $item.closest('ul.items');
+
+                    return (handle.className === 'drag-handle' && $list[0] === container);
                 }
             });
 
@@ -104,14 +111,23 @@ Campsi.components.add(function ($super) {
             var instance = this;
             instance.createItemComponent(index, itemValue, function (itemComponent) {
 
-                var itemEl = instance.createItemDom(instance.value.length, itemComponent);
+                var itemEl = instance.createItemDom(instance.value.length, itemComponent),
+                    item = {component: itemComponent, dom: itemEl};
 
-                instance.dom.list.find('> li').eq(index).before(itemEl);
-                instance.items.push(index, 0, itemComponent);
-                instance.value.push(index, 0, itemValue);
+                if (index < instance.items.length) {
+                    instance.dom.list.find('> li').eq(index).before(itemEl);
+                    instance.items.splice(index, 0, item);
+                    instance.value.splice(index, 0, itemValue);
+                } else {
+                    instance.dom.list.append(itemEl);
+                    instance.items.push(item);
+                    instance.value.push(itemValue);
+                }
+
                 instance.trigger('change');
-
-                callback.call(instance);
+                if (callback) {
+                    callback.call(instance);
+                }
             });
         },
 
@@ -142,7 +158,7 @@ Campsi.components.add(function ($super) {
                 });
 
                 $form.append(component.html());
-                $form.append($btn.text('Add'));
+                $form.append($btn.text('Add').addClass('new-collection-item'));
                 instance.dom.control.append($form);
             });
         },
@@ -150,26 +166,14 @@ Campsi.components.add(function ($super) {
         createItemComponent: function (index, item, callback) {
             var instance = this;
 
-
-            //console.info("Campsi.components.create", instance.options.props.items, item, instance.context);
-
             Campsi.components.create(
                 instance.options.props.items,
                 item,
                 instance.context,
                 function (comp) {
-
-                    //console.info("createdItem(name, options, value)", comp.name, comp.options, comp.value);
-
-                    comp.index = index;
-
                     comp.on('change', function () {
                         instance.value[index] = this.val();
                         instance.trigger('change');
-                    });
-
-                    comp.on('error', function () {
-
                     });
 
                     callback.call(instance, comp);
@@ -185,20 +189,32 @@ Campsi.components.add(function ($super) {
                 $removeButton = $('<button class="remove">&times;</button>');
 
             $removeButton.on('click', function () {
-                $li.remove();
-
-                // todo replace by removeItemAt
-
-                instance.value.splice(index, 1);
-                instance.trigger('change');
+                instance.removeItemAt($li.index());
             });
-
 
             $li.append($dragHandle)
                 .append(component.html())
                 .append($removeButton);
 
             return $li;
+        },
+
+        update: function () {
+            console.info(this.previousValue, this.value);
+        },
+
+        getDesignerFields: function () {
+            return [
+                {
+                    name: 'items',
+                    type: 'designer-field',
+                    label: 'Items',
+                    props: {
+                        anonymous: true
+                    }
+                }
+            ];
+
         }
     }
 });

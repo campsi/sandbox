@@ -2,89 +2,61 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
-    <script type="application/javascript" src="lib/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet" href="src/reset.css"/>
+    <link rel="stylesheet" href="lib/dragula.js/dist/dragula.min.css"/>
+    <link rel="stylesheet" href="src/core.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campsi UI</title>
 </head>
 <body>
+<button onclick="toggleOutline()">Show borders</button>
+<div id="designer">
+
+</div>
+
+<script type="application/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+<script type="application/javascript" src="lib/dragula.js/dist/dragula.js"></script>
+<script type="application/javascript" src="src/campsi.core.js"></script>
+<script type="application/javascript" src="src/campsi.loader.js"></script>
 <script>
 
+    var outline = localStorage.getItem('outline') == 'true';
 
-    var Campsi = (function () {
+    if (outline) {
+        $('body').addClass('outline');
+    }
 
-        var Component = function () {
-            this.componentConstruct = true;
-        };
+    function toggleOutline() {
+        outline = !outline;
+        $('body').toggleClass('outline', outline);
+        localStorage.setItem('outline', outline);
+    }
 
-        Component.prototype = Object.create({
 
-            init: function (options, value, context) {
-                console.info('Component init', this);
-            }
+    var myForm;
+    var value = {
+        "ingredients": [{"name": "lardons", "vegan": false}, {
+            "name": "oignons",
+            "vegan": true
+        }, {"name": "oignons", "vegan": true}],
+        "base": "cream",
+        "name": "Campagnarde",
+        "price": "11",
+        "contact": {
+            "name": "Romain Bessuges",
+            "address": "111 Av. Théroigne de Méricourt",
+            "postcode": "34000",
+            "city": "MONTPELLIER"
+        }
+    };
 
+    $.getJSON('model.json', function (model) {
+        Campsi.components.create(model, value, null, function (form) {
+            myForm = form;
+            $('#designer').append(form.html());
         });
-
-
-        var map = this.components = {
-            component: Component
-        };
-
-        var get = function (name, onLoad) {
-            onLoad.call(this, map[name]);
-        };
-
-        var add = function (prototypeFactory) {
-            extend('component', prototypeFactory);
-        };
-
-        var extend = function (parentName, prototypeFactory) {
-
-            get(parentName, function (Parent) {
-                var prototype = prototypeFactory(Parent.prototype);
-                var component = function () {
-                    Parent.call(this);
-                };
-
-                component.prototype = Object.create($.extend({}, Parent, prototype));
-                component.constructor = Parent;
-                map[prototype.name] = component;
-            });
-        };
-
-        return {
-            map: map,
-            get: get,
-            add: add,
-            extend: extend
-        }
-
-    })();
-
-    Campsi.add(function ($super) {
-
-        return {
-            name: 'text',
-            init: function () {
-                console.info(this);
-                $super.init.call(this);
-                console.info('text init', this);
-            }
-        }
     });
-
-    Campsi.extend('text', function ($super) {
-        return {
-            name: 'number',
-            init: function () {
-                $super.init.call(this);
-                console.info('number init', this);
-            }
-        }
-    });
-
-    var n = new Campsi.map['number']();
-    n.init();
 
 </script>
-
 </body>
 </html>

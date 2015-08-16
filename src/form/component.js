@@ -74,15 +74,9 @@ Campsi.components.add(function ($super) {
         getDesignerFields: function () {
             return [
                 {
-                    type: "collection",
+                    type: "designer-form",
                     name: "fields",
-                    label: "Fields",
-                    props: {
-                        withEmptyForm: false,
-                        items: {
-                            type: "designer-field" // todo créer designer-field
-                        }
-                    }
+                    label: "Fields"
                 }
             ];
         },

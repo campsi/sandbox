@@ -29,22 +29,42 @@ Campsi.components.extend('form', function ($super) {
             Campsi.components.get(value.type, function (component) {
 
                 alteredOptions.props = alteredOptions.props || {};
-                alteredOptions.props.fields = [{
-                    type: 'text',
-                    name: 'label',
-                    label: 'Label',
-                    required: true,
-                    layout: 'horizontal'
-                }, {
-                    type: 'text',
-                    name: 'name',
-                    label: 'Name',
-                    layout: 'horizontal',
-                    props: {
-                        matches: '^[a-zA-Z_-][a-zA-Z0-9_-]?'
-                    },
-                    required: true
-                }];
+                alteredOptions.props.fields = [];
+
+                if (alteredOptions.props.anonymous !== true) {
+
+                    alteredOptions.props.fields.push({
+                        type: 'text',
+                        name: 'label',
+                        label: 'Label',
+                        required: true,
+                        layout: 'horizontal'
+                    });
+
+                    alteredOptions.props.fields.push({
+                        type: 'text',
+                        name: 'name',
+                        label: 'Name',
+                        layout: 'horizontal',
+                        props: {
+                            matches: '^[a-zA-Z_-][a-zA-Z0-9_-]?'
+                        },
+                        required: true
+                    });
+                }
+
+                if (value.type !== 'form') {
+                    //
+                    //alteredOptions.props.fields.push({
+                    //    type: value.type,
+                    //    label: 'Default value',
+                    //    name: 'defaultValue',
+                    //    layout: 'horizontal',
+                    //    props: value.props
+                    //});
+
+                }
+                //console.info(value.type);
 
 
                 var componentDesignerFields = component.prototype.getDesignerFields.call();
@@ -63,11 +83,18 @@ Campsi.components.extend('form', function ($super) {
 
                 instance.dom.root.addClass('designer-field');
 
-                instance.dom.control.prepend($('<h2 class="type">').text(value.type));
+                instance.dom.header = $('<h2 class="type">').text(instance.value.type + ' : ' + instance.value.name);
+                instance.dom.control.prepend(instance.dom.header);
+                instance.dom.header.click(function () {
+                    $(this).closest('.designer-field').toggleClass('collapsed');
+                });
 
+                if(instance.options.props.anonymous === true){
+                    instance.dom.header.hide();
+                }
 
                 instance.component = component;
-                instance.createFields();
+                //instance.createFields();
 
 
             });
@@ -75,13 +102,20 @@ Campsi.components.extend('form', function ($super) {
         allFieldsCreated: function () {
             var instance = this;
 
-            $(instance.dom.fields['label']).addClass('label-field');
-            $(instance.dom.fields['name']).addClass('name-field');
+            if (instance.options.props.anonymous !== true) {
+                $(instance.dom.fields['label']).addClass('label-field');
+                $(instance.dom.fields['name']).addClass('name-field');
 
-            instance._fields.label.on('change', function () {
-                instance._fields.name.val(sanitize(this.val()));
-                instance._fields.name.trigger('change');
-            });
+                instance._fields.label.on('change', function () {
+                    var newValue = sanitize(this.val());
+                    instance._fields.name.val(newValue);
+                    instance._fields.name.trigger('change');
+                });
+
+                instance._fields.name.on('change', function () {
+                    instance.dom.header.text(instance.value.type + ' : ' + this.val()); // todo change
+                });
+            }
 
             var propsBtn = $('<button class="properties">Properties</button>');
 
@@ -114,7 +148,5 @@ Campsi.components.extend('form', function ($super) {
                 callback.call(instance, form);
             });
         }
-
-
     }
 });

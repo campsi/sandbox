@@ -1,5 +1,5 @@
 body {
-    font-family: HelveticaNeue;
+    font-family: "Avenir Next", HelveticaNeue;
 }
 
 * {
@@ -15,8 +15,12 @@ input {
     margin-bottom: 0.5rem;
 }
 
+.field:last-of-type {
+    margin-bottom: 0;
+}
+
 .field > .label {
-    font-size: 0.8em;
+    font-size: 0.85em;
     line-height: 2em;
     color: #6d6d6d;
 }
@@ -40,7 +44,7 @@ input {
     position: absolute;
     right: 0.25rem;
     top: 0.25rem;
-    color:    red;
+    color:    gray;
     font-size: 1rem;
 }
 

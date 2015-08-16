@@ -1,5 +1,7 @@
 var Campsi = (function () {
 
+    var refCount = 0;
+
     /**
      * Base class for every component
      * @constructor
@@ -20,7 +22,6 @@ var Campsi = (function () {
         init: function (options, value, context, callback) {
 
             this.options = $.extend({}, this.defaultOptions, options);
-
             this.defaultValue = options.default || this.defaultValue;
             this.value = value || JSON.parse(JSON.stringify(this.defaultValue));
             this.context = context || value;
@@ -37,8 +38,12 @@ var Campsi = (function () {
         },
 
         createInitialDomElements: function () {
-            var d = this.dom = {};
-            d.root = $('<div class="field component">');
+            var d = this.dom = {},
+                id = this.name + '-' + refCount;
+
+            refCount++;
+
+            d.root = $('<div class="field component">').addClass(this.name).attr('id', id);
             d.root.append($('<pre class="debug">').text(this.name));
             d.root.data('component', this);
 
@@ -222,6 +227,7 @@ var Campsi = (function () {
                     component.init(options, value, context, onLoad);
                 });
             };
+
 
             return {
                 map: map,

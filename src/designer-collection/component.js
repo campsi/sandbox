@@ -20,28 +20,16 @@ Campsi.components.extend('form', function ($super) {
                     label: 'Properties',
                     type: 'form',
                     props: {
-                        'fields': [
+                        fields: [
                             {
                                 name: "fields",
-                                label: "Champs",
-                                type: "collection",
-                                props: {
-                                    withEmptyForm: false,
-                                    placeholder: 'Drag a component here to create a field',
-                                    items: {
-                                        type: "designer-field"
-                                    }
-                                }
+                                type: "designer-form"
                             }
                         ]
                     }
 
                 }]
             }
-        },
-
-        allFieldsCreated: function () {
-            $super.allFieldsCreated.apply(this, arguments);
         }
 
         /*

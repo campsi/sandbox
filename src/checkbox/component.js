@@ -18,6 +18,13 @@ Campsi.components.add(function ($super) {
                 instance.value = $(this).is(':checked');
                 instance.trigger('change');
             });
+
+            this.update();
+        },
+
+        update: function(){
+
+            this.dom.checkbox.attr('checked', this.value);
         }
     }
 });
