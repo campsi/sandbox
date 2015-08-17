@@ -1,3 +1,7 @@
+html  {
+    background: url('background.png')
+}
+
 body {
     font-family: "Avenir Next", HelveticaNeue;
 }
@@ -23,10 +27,15 @@ input {
     font-size: 0.85em;
     line-height: 2em;
     color: #6d6d6d;
+    padding: 0 0.4rem;
 }
 
 .field > .control {
     
+}
+
+.collection-item {
+    background: #ffffff;
 }
 
 .field .label, .field .control {
@@ -86,10 +95,13 @@ li.component-drag {
     list-style:    none;
     background:    linear-gradient(deepskyblue, dodgerblue);
     color:         white;
-    padding:       1em;
-    border-radius: .3em;
+    padding:       .5rem 1em ;
+    border-radius: .5rem;
     float:         left;
     margin:        .5em;
+    border: 1px solid deepskyblue;
+    border-bottom: 3px solid #1668b8;
+    cursor: move;
 }
 
 li.component-drag.gu-transit {

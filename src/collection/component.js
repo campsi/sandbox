@@ -156,9 +156,9 @@ Campsi.components.add(function ($super) {
                     return false;
 
                 });
-
                 $form.append(component.html());
                 $form.append($btn.text('Add').addClass('new-collection-item'));
+                instance.dom.control.append('<p class="empty-item-label">Add new item</p>');
                 instance.dom.control.append($form);
             });
         },

@@ -44,7 +44,6 @@ var Campsi = (function () {
             refCount++;
 
             d.root = $('<div class="field component">').addClass(this.name).attr('id', id);
-            d.root.append($('<pre class="debug">').text(this.name));
             d.root.data('component', this);
 
             if (this.withLabel && this.options.label) {

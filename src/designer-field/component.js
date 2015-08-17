@@ -94,7 +94,6 @@ Campsi.components.extend('form', function ($super) {
                 }
 
                 instance.component = component;
-                //instance.createFields();
 
 
             });

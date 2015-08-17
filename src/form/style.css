@@ -1,10 +1,12 @@
 .component.form {
     padding: 0.5rem;
+    margin-top: 1em;
 }
 
-/*.component.form.without-label{*/
+.component.form.without-label{
     /*padding: 0;*/
-/*}*/
+    margin-top: 0;
+}
 
 .component.form > .label {
     font-weight: bold;

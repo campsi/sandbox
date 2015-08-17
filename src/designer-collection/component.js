@@ -14,7 +14,9 @@ Campsi.components.extend('form', function ($super) {
                 fields: [{
                     name: "name",
                     label: "Collection name",
-                    type: "text"
+                    type: "text",
+                    layout: "horizontal",
+                    required: true
                 }, {
                     name: 'props',
                     label: 'Properties',
@@ -22,6 +24,7 @@ Campsi.components.extend('form', function ($super) {
                     props: {
                         fields: [
                             {
+                                label: 'Fields',
                                 name: "fields",
                                 type: "designer-form"
                             }

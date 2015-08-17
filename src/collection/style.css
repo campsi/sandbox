@@ -4,24 +4,25 @@
 
 .collection.component ul.items {
     list-style-type: none;
-    margin:          0;
-    padding:         0;
-    box-sizing:      border-box;
-    min-height:      4rem;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    min-height: 4rem;
 }
 
 .collection-empty-item {
-    padding:         0;
+    padding: 0;
     list-style-type: none;
-    display:         flex;
+    display: flex;
 }
 
 .collection-empty-item .field {
     flex: 1;
 }
+
 .collection-empty-item > button.new-collection-item {
     background: dodgerblue;
-    border:none;
+    border: none;
     color: white;
     margin-bottom: -1px;
     margin-top: -1px;
@@ -29,9 +30,9 @@
 }
 
 .collection-item, .collection-empty-item {
-    display:    flex;
-    margin:     -1px 0 0.5rem 0;
-    width:      100%;
+    display: flex;
+    margin: -1px 0 0.5rem 0;
+    width: 100%;
     border: 1px solid #cfcfcf;
     border-bottom: 3px solid rgba(56, 56, 56, 0.3);
     box-sizing: border-box;
@@ -45,19 +46,20 @@
 }
 
 .collection-item > .drag-handle {
-    padding:             0.2rem;
-    width:               2em;
-    color:               transparent;
+    padding: 0.2rem;
+    width: 2em;
+    color: transparent;
     background-image: url(drag-icon.png);
-    background-size:     1em;
+    background-size: 1em;
     background-position: center;
-    background-repeat:   no-repeat;
-    background-color:    rgba(0, 0, 0, 0.1);
+    background-repeat: no-repeat;
+    background-color: rgba(0, 0, 0, 0.05);
     border-radius: 0.4em 0 0 0.4em;
+    cursor: move;
 }
 
 .collection-item:hover > .drag-handle {
-    background-image: url(drag-icon.png);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .collection-item > .field {
@@ -66,16 +68,16 @@
 }
 
 .collection-item > button.remove {
-    border:          none;
-    background:      url(remove-icon.png);
+    border: none;
+    background: url(remove-icon.png);
     background-size: contain;
-    opacity:         0.3;
-    width:           2em;
-    height:          2em;
-    margin:          0;
-    color:           transparent;
-    cursor:          pointer;
-    align-self:      center;
+    opacity: 0.3;
+    width: 2em;
+    height: 2em;
+    margin: 0;
+    color: transparent;
+    cursor: pointer;
+    align-self: center;
 }
 
 .collection-item:hover > button.remove {
@@ -88,10 +90,17 @@
 
 .collection.component p.placeholder {
     text-align: center;
-    padding:    1.1em;
+    padding: 1.1em;
     font-style: italic;
-    opacity:    0.4;
+    opacity: 0.4;
     position: absolute;
     width: 100%;
     z-index: -1;
+}
+
+.collection.component p.empty-item-label {
+    margin-bottom: 0.5em;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: grey;
 }
